@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require_relative 'bootstrap'
 
-puts """
+INPUT = """
 +3
 +8
 -5
@@ -957,4 +957,7 @@ puts """
 +10
 -26
 -73113
-""".split.map(&:to_i).sum
+"""
+
+part_one_answer = INPUT.split.map(&:to_i).sum
+puts part_one_answer
