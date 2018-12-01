@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require_relative 'bootstrap'
 
-INPUT = """
+INPUT = %w(
 +3
 +8
 -5
@@ -957,7 +957,22 @@ INPUT = """
 +10
 -26
 -73113
-"""
+)
 
-part_one_answer = INPUT.split.map(&:to_i).sum
+part_one_answer = INPUT.map(&:to_i).sum
 puts part_one_answer
+
+
+seen = Hash.new { 0 }
+current = 0
+
+INPUT.map(&:to_i).cycle do |n|
+  seen[current] += 1
+
+  if seen[current] == 2
+    puts current
+    exit
+  end
+
+  current += n
+end
