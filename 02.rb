@@ -260,3 +260,21 @@ end
 
 # Part 1
 puts x.count {|x| x.include? 2 } * x.count {|x| x.include? 3 }
+
+# Part 2
+
+INPUT.each do |str1|
+  INPUT.each do |str2|
+    next if str1 == str2
+
+    z = str1.split('').zip(str2.split('')).count do |a|
+      a[0] != a[1]
+    end
+
+    if z == 1
+      puts str1, str2
+      puts str1.split('').zip(str2.split('')).select{|x|x[0]==x[1]}.map{|x|x[0]}.join
+      exit
+    end
+  end
+end
