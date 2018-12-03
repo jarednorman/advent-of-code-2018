@@ -15,6 +15,10 @@ class Claim
 
   attr_reader :id, :x, :y, :width, :height
 
+  def ==(other_object)
+    other_object.id == id
+  end
+
   def tiles_covered
     @tiles_covered ||=
       (0...height).flat_map do |y2|
@@ -29,13 +33,12 @@ class DayThree
   def initialize(input)
     @input = input
     @claims = input.map { |c| Claim.new(c) }
+    @blah = Hash.new do |hash, key|
+      hash[key] = []
+    end
   end
 
   def part_one
-    blah = Hash.new do |hash, key|
-      hash[key] = []
-    end
-
     claims.each do |c|
       c.tiles_covered.each do |t|
         blah[t] << c
@@ -49,16 +52,13 @@ class DayThree
 
   # This works.
   def part_two
-    claims.find do |c1|
-      claims.all? do |c2|
-        c1.id == c2.id || c1.tiles_covered.disjoint?(c2.tiles_covered)
-      end
-    end.id
+    rejects = blah.values.reject{|v|v.count < 2}.flatten.uniq
+    (claims - rejects).first.id
   end
 
   private
 
-  attr_reader :input, :claims
+  attr_reader :input, :claims, :blah
 end
 
 solution = DayThree.new(INPUT)
