@@ -16,11 +16,12 @@ class Claim
   attr_reader :id, :x, :y, :width, :height
 
   def tiles_covered
-    (0...height).flat_map do |y2|
-      (0...width).map do |x2|
-        [x2 + x, y2 + y]
-      end
-    end
+    @tiles_covered ||=
+      (0...height).flat_map do |y2|
+        (0...width).map do |x2|
+          [x2 + x, y2 + y]
+        end
+      end.to_set
   end
 end
 
@@ -46,7 +47,13 @@ class DayThree
     end.length
   end
 
+  # This works.
   def part_two
+    claims.find do |c1|
+      claims.all? do |c2|
+        c1.id == c2.id || c1.tiles_covered.disjoint?(c2.tiles_covered)
+      end
+    end.id
   end
 
   private
