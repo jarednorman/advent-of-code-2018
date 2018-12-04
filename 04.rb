@@ -63,3 +63,18 @@ best_minute = s.max_by{|(k,v)|v}.first
 
 puts "Best Minute: #{best_minute}"
 puts "Result: #{worst_id}x#{best_minute}=#{worst_id*best_minute}"
+
+puts "\nPART TWO\n"
+
+some_things = grouped.transform_values do |v|
+  v.flat_map(&:specific_minutes).group_by{|x|x}.map{|(x,y)|[x, y.count]}.max_by(&:last) || [0, 0]
+end
+
+result = some_things.max_by{|(x,y)|y.last}
+
+guard = result.first
+minute = result.last.first
+
+puts "Best Guard: #{guard}"
+puts "Best Minute: #{minute}"
+puts "Part two: #{guard * minute}"
