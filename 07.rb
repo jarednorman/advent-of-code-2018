@@ -24,18 +24,18 @@ end
 
 steps = steps.values
 
-order = []
+# order = []
 
-while steps.any?
-  steps.each do |step|
-    next unless step.dependencies.empty?
-    order << step.letter
-    steps.each do |x|
-      x.dependencies.delete(step.letter)
-    end
-    steps.delete(step)
-    break
-  end
-end
+# while steps.any?
+#   steps.each do |step|
+#     next unless step.dependencies.empty?
+#     order << step.letter
+#     steps.each do |x|
+#       x.dependencies.delete(step.letter)
+#     end
+#     steps.delete(step)
+#     break
+#   end
+# end
 
-puts "Part One: #{order.join}"
+# puts "Part One: #{order.join}"
