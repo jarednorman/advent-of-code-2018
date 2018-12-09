@@ -12,51 +12,79 @@ class Player
   attr_accessor :score
 end
 
+Node = Struct.new(:value, :prev, :next) do
+  def offset(n)
+    node = self
+
+    if n > 0
+      n.times { node = node.next }
+    elsif n < 0
+      n.magnitude.times { node = node.prev }
+    end
+
+    node
+  end
+
+  def verify!
+    binding.pry unless self.next.prev.value == value && prev.next.value == value
+  end
+
+  def insert_after(value)
+    node = Node.new(value, self, self.next)
+
+    node.next.prev = node
+    node.prev.next = node
+
+    node
+  end
+
+  def remove!
+    self.prev.next = self.next
+    self.next.prev = self.prev
+
+    self
+  end
+end
+
 class PartOne
   def initialize(player_count, last_marble, print: false)
     @players = player_count.times.map { Player.new }
-    @marbles = (0..last_marble).to_a
-    @circle = []
+    @last_marble = last_marble
     @print = print
   end
 
   def answer
-    players.cycle.each do |player|
-      marble = marbles.shift
-      break unless marble
+    (0..@last_marble).zip(players.cycle).each do |(marble, player)|
+      if !current_marble
+        self.current_marble = Node.new(marble, nil, nil)
+        current_marble.next = current_marble
+        current_marble.prev = current_marble
+      elsif marble % 23 == 0
+        player.score += marble
+        removed = current_marble.offset(-7)
+        self.current_marble = removed.next
+        removed.remove!
+        player.score += removed.value
+      else
+        self.current_marble = current_marble.offset(1).insert_after(marble)
+      end
 
-      play(player, marble)
+      # current_marble.verify!
+
+      if @print
+        x = ["(#{current_marble.value})"]
+        n = current_marble.next
+        while n != current_marble
+          x << n.value
+          n = n.next
+        end
+
+        z = x.index(0) || x.index('(0)')
+        puts x.rotate(z).join(' ')
+      end
     end
 
     players.map(&:score).max
-  end
-
-  def play(player, marble)
-    if marble % 1000 == 0
-      puts "#{(marble.to_f/marbles.last*100).round(3)}% done"
-    end
-
-    if circle == []
-      circle << marble
-      self.current_marble = marble
-    elsif marble % 23 == 0
-      player.score += marble
-      player.score += circle.delete_at(compute_index(-7))
-      self.current_marble = circle[compute_index(-6)]
-    else
-      circle.insert(compute_index(2), marble)
-      self.current_marble = marble
-    end
-
-    if @print
-      puts(circle.map do |n|
-        if n == current_marble
-          "(#{n})"
-        else
-          n
-        end
-      end.join(' '))
-    end
   end
 
   def compute_index(offset)
@@ -92,6 +120,6 @@ check(13, 7999, 146373)
 check(17, 1104, 2764)
 check(21, 6111, 54718)
 check(30, 5807, 37305)
-
+#
 puts "Part One: #{PartOne.new(PLAYER_COUNT, LAST_MARBLE).answer}\n\n"
 puts "Part Two: #{PartOne.new(PLAYER_COUNT, LAST_MARBLE * 100).answer}"
