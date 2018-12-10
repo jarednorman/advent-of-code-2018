@@ -28,11 +28,8 @@ end
   end
 
   def run!
-    10850.times { lights.each(&:step!) }
-    while gets.chomp != "q"
-      lights.each(&:step!)
-      print_board
-    end
+    10880.times { lights.each(&:step!) }
+    print_board
   end
 
   def print_board
