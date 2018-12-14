@@ -50,7 +50,7 @@ class PartTwo < PartOne
       (0..299).flat_map do |x|
         (0..299).flat_map do |y|
           max_size = [(300 - x), (300 - y)].min
-          (1..max_size).pmap do |size|
+          (1..max_size).pmap(max_size) do |size|
             [x, y, size, grid_value(x, y, size)]
           end
         end
