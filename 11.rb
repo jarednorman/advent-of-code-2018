@@ -13,7 +13,7 @@ class PartOne
 
   def answer
     answer = (0..297).flat_map do |x|
-      (0..296).map { |y| [x, y, grid_value(x, y)] }
+      (0..297).map { |y| [x, y, grid_value(x, y, 3)] }
     end.max_by{|x|x.last}
 
     [answer.first+1,answer[1]+1].join(',')
@@ -27,9 +27,9 @@ class PartOne
     @rack_ids[x] ||= x + 10
   end
 
-  def grid_value(x, y)
-    (0..2).sum do |dx|
-      (0..2).sum do |dy|
+  def grid_value(x, y, size)
+    (0..(size - 1)).sum do |dx|
+      (0..(size - 1)).sum do |dy|
         power_map[x + dx][y + dy]
       end
     end
@@ -43,3 +43,8 @@ class PartOne
 end
 
 puts "Part One: #{PartOne.new(INPUT).answer}"
+
+class PartTwo < PartOne
+end
+
+puts "Part Two: #{PartTwo.new(INPUT).answer}"
