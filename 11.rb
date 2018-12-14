@@ -45,6 +45,19 @@ end
 puts "Part One: #{PartOne.new(INPUT).answer}"
 
 class PartTwo < PartOne
+  def answer
+    answer =
+      (250..300).flat_map do |size|
+        puts "Checking size: #{size}"
+        (0..(300 - size)).flat_map do |x|
+          (0..(300 - size)).map do |y|
+            [x, y, size, grid_value(x, y, size)]
+          end
+        end.max_by{|x|x.last}
+      end
+
+    [answer.first+1,answer[1]+1,answer[2]].join(',')
+  end
 end
 
 puts "Part Two: #{PartTwo.new(INPUT).answer}"
