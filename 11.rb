@@ -47,14 +47,14 @@ puts "Part One: #{PartOne.new(INPUT).answer}"
 class PartTwo < PartOne
   def answer
     answer =
-      (1..300).pmap(300) do |size|
-        (0..(300 - size)).flat_map do |x|
-          (0..(300 - size)).map do |y|
+      (0..299).flat_map do |x|
+        (0..299).flat_map do |y|
+          max_size = [(300 - x), (300 - y)].min
+          (1..max_size).pmap do |size|
             [x, y, size, grid_value(x, y, size)]
           end
-        end.max_by{|x|x.last}
-      end
-
+        end
+      end.max_by{|x|x.last}
     [answer.first+1,answer[1]+1,answer[2]].join(',')
   end
 end
