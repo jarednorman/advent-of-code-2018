@@ -1,37 +1,45 @@
 #!/usr/bin/env ruby
 require_relative 'bootstrap'
 
-INPUT = 503761
+INPUT = '503761'
 
 class PartOne
   def initialize(input)
     @input = input
-    @state = [3, 7]
+    @state = '37'
     @a = 0
     @b = 1
+    @step = 0
   end
 
   attr_reader :input
   attr_accessor :a, :b, :state
 
   def step
-    a_score = state[a]
-    b_score = state[b]
+    @step += 1
+    a_score = state[a].to_i
+    b_score = state[b].to_i
 
-    total = a_score + b_score
-    self.state = state + total.to_s.split('').map(&:to_i)
+    total = (a_score + b_score).to_s
+    self.state << total
 
-    self.a = (a + 1 + a_score) % state.length
-    self.b = (b + 1 + b_score) % state.length
+    stl = state.length
+    self.a = (a + 1 + a_score) % stl
+    self.b = (b + 1 + b_score) % stl
+
+    if @step % 100000 == 0
+      puts @step
+    end
+
+    total.length
   end
 
   def answer
-    until state.length >= input + 10
+    until state.length >= input.to_i + 10
       step
-      puts state.length if state.length % 1000 == 0
     end
 
-    state.slice(input, 10).join
+    state.slice(input.to_i, 10).join
   end
 
   def draw
@@ -54,4 +62,17 @@ end
 #   test.step
 # end
 # puts "Test: #{test.state}"
-puts "Part One: #{PartOne.new(INPUT).answer}"
+# puts "Part One: #{PartOne.new(INPUT).answer}"
+
+class PartTwo < PartOne
+  def answer
+    25000000.times { step }
+    # raise if state.include? input
+    return state.index(input)
+  end
+end
+#puts PartTwo.new('51589').answer
+#puts PartTwo.new('01245').answer
+#puts PartTwo.new('92510').answer
+#puts PartTwo.new('59414').answer
+puts "Part Two: #{PartTwo.new(INPUT).answer}"
