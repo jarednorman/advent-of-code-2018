@@ -50,9 +50,8 @@ class PartOne
   attr_accessor :state
 
   def answer(n)
-    n.times.each do |n|
-      puts n if n % 1000 == 0
-      step!
+    until n == 0
+      n -= step!(n)
     end
 
     state.split('').each_with_index.sum do |c, i|
@@ -64,9 +63,10 @@ class PartOne
     end
   end
 
-  def step!
+  def step!(n)
     if state == "#....#....#........#....#................#.....#....#....#....#........#.....#.........#.....#.....#....#.....#.....#......#....#.....#....#.......#"
-      @offset -= 1
+      @offset -= n
+      n
     else
       @offset += 2
       letters = ['.', '.'] + state.split('') + ['.', '.']
@@ -87,6 +87,7 @@ class PartOne
       while state[-1] == '.'
         self.state = state.slice(0, state.length - 1)
       end
+      1
     end
   end
 end
