@@ -128,6 +128,8 @@ class Round
     puts map.map.first.map{' '}.join
     puts map.map.first.map{'#'}.join
     puts map.map.first.map{' '}.join
+    puts "#{@tick}:"
+    puts map.map.first.map{' '}.join
     grouped = carts.group_by{|c|[c.x, c.y]}
 
     map.map.each_with_index do |row, y|
@@ -158,11 +160,14 @@ class Round
         cart.turn!
       end
 
-      carts.each do |cart2|
-        next if cart2 == cart
-        raise [cart.x, cart.y].join(",") if cart2.x == cart.x && cart2.y == cart.y
+      carts.group_by{|c|[c.x, c.y]}.values.each do |cs|
+        carts.subtract(cs) if cs.length > 1
       end
     end
+
+      if carts.length == 1
+        raise [carts.first.x, carts.first.y].join(',')
+      end
 
     @tick += 1
   end
@@ -184,6 +189,7 @@ round = Round.new(map, map.extract_carts!)
 loop do
   round.tick!
 rescue => e
-  puts "Part One: #{e.message}"
+  round.render
+  puts "Part Two: #{e.message}"
   exit
 end
